@@ -1,0 +1,4 @@
+Camera results
+Camera	X (mm)	Y (mm)	Z (mm)	Points	Avg. residual (mm)
+01	380.33	1392.03	1697.87	1423	0.10573
+02	334.87	-336.21	1678.49	1423	0.10433
