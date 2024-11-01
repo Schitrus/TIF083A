@@ -8,20 +8,26 @@ def read_data(filepath):
     filepath -- filepath to the tsv file
     """
     f = open(filepath)
-    for x in range(9): # Garbage
-        f.readline()
 
-    # Parse the object names
-    obj_names = f.readline().split('\t')[1:]
-
-    f.readline() # Garbage
-
-    # Parse the header
-    header = f.readline().split('\t')
+    # Read lines until header appears
+    obj_names = []
+    header = []
+    raw_data = []
+    while True:
+        line = f.readline()
+        if line.startswith('DATA_TYPES') or line.startswith('MARKER_NAMES'):
+            obj_names = line.split('\t')[1:]
+        elif line.startswith('Frame'):
+            header = line.split('\t')
+            break
+        elif line[0].isdigit(): # incase there is no header at all
+            header = line.split('\t')
+            raw_data.append(line)
+            break
+        
     num_of_objects = (len(header) - 2)//3
 
     # Parse the rest, seperated by lines
-    raw_data = []
     for x in f:
         raw_data.append(x)
 

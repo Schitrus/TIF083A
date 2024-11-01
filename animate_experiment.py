@@ -58,7 +58,7 @@ def generate_animation(filepath, rmm=False, speed=1.0, traceback_time=1.0, start
         paths = [ax.plot(1, 0, linestyle='-', alpha=0.6, color=colors[i], linewidth=2.0)[0] for i in range(len(objs))]
 
     # Numer of steps to traceback
-    traceback_step = int(traceback_time/camera_speed)
+    traceback_step = int(traceback_time*camera_speed)
     title = ax.set_title(f'{filename}')
 
     # Go through each frame
