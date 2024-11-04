@@ -45,6 +45,13 @@ def generate_animation(filepath, rmm=False, speed=1.0, traceback_time=1.0, start
               'hotpink', 'lightseagreen', 'sandybrown', 'springgreen', 'violet',
               'tomato', 'darkolivegreen', 'darkslateblue', 'darkslategrey', 'lightcoral']
     
+    positions = []
+    paths = []
+    xpositions = []
+    ypositions = []
+    xpaths = []
+    ypaths = []
+
     if rmm:
         # Track positions and paths for the objects and angular momentum markers
         positions = [ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=obj_names[i*3])[0] for i in range(len(objs)//3)]
@@ -70,21 +77,21 @@ def generate_animation(filepath, rmm=False, speed=1.0, traceback_time=1.0, start
         # Loop through all objects and append positions and paths to graphical line
         if not rmm:
             for obj, pos, path in zip(objs, positions, paths):
-                pos.set_data(obj[0][step], obj[1][step])
+                pos.set_data([obj[0][step]], [obj[1][step]])
                 path.set_data(obj[0][traceback:step], obj[1][traceback:step]) # Path is traced
-            return *positions, *paths, title
+            return *positions, *paths, title,
         else:
             # Objects and angular tracks
             for obj, xobj, yobj, pos, xpos, ypos, path, xpath, ypath in zip(objs[::3], objs[1::3], objs[2::3], positions, xpositions, ypositions, paths, xpaths, ypaths):
-                pos.set_data(obj[0][step], obj[1][step])
+                pos.set_data([obj[0][step]], [obj[1][step]])
                 path.set_data(obj[0][traceback:step], obj[1][traceback:step])
-                xpos.set_data(xobj[0][step], xobj[1][step])
-                ypos.set_data(yobj[0][step], yobj[1][step])
+                xpos.set_data([xobj[0][step]], [xobj[1][step]])
+                ypos.set_data([yobj[0][step]], [yobj[1][step]])
                 # Trace the angular tracks relative to the objects position
                 # Subtract the objects path from the angular track and add objects current position
                 xpath.set_data(obj[0][step] + np.array(xobj[0][traceback:step]) - np.array(obj[0][traceback:step]), obj[1][step] + np.array(xobj[1][traceback:step]) - np.array(obj[1][traceback:step]))
                 ypath.set_data(obj[0][step] + np.array(yobj[0][traceback:step]) - np.array(obj[0][traceback:step]), obj[1][step] + np.array(yobj[1][traceback:step]) - np.array(obj[1][traceback:step]))
-            return *positions, *xpositions, *ypositions, *paths, *xpaths, *ypaths, title
+            return *positions, *xpositions, *ypositions, *paths, *xpaths, *ypaths, title,
 
     fig.legend()
 
