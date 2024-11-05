@@ -1,0 +1,23 @@
+Spring disc TOTAL:
+mtot = 31.6g, d = 5.0cm, h = 0.6cm
+spring (16 pcs) spec:
+mspring = 0.21g, l = 1.0cm, d=0.8cm
+
+Moment of inertia:
+mdisc = 31.6g - 16*0.21g = 28.24g
+Idisc = 0.5*mdisc*(d/2)^2 = 9.00625*10^-6
+Ispring = 1/12*mspring*l^2 = 1.75*10^-9
+Itot = Idisc + 16*(Ispring+mspring*(d/2+l/2)^2) = 0.00001315025
+
+m = 5.9g    d=5.0cm, h=0.6cm
+Inner circle: di=2.9cm, hi=0.2cm
+I = 1/2*m*((d/2)^2+(di/2)^2) + 1/2*(di/2)^2 = m*(1/8*d^2 + 1/4*di^2) = 3.084225*10^-6
+
+m = 14.6g   d=5.0cm h=0.7cm
+I = 1/2*m*(d/2)^2 = 4.5625*^-6
+
+m = 27.7g   d=5.0cm h=0.6cm
+I = 1/2*m*(d/2)^2 = 8.65625*^-6
+
+m = 396.1g   d=7.9cm h=1.0cm
+I = 1/2*m*(d/2)^2 = 0.0003090075125
