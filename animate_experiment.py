@@ -67,18 +67,18 @@ def generate_animation(filepath, speed=1.0, traceback_time=1.0, start=0.0, end=1
     total_rmm = gx.plot(0, 0, alpha=0.5, label=f'Total angular momentum', linewidth=3.0, color='DarkSlateGrey')[0]
             
 
-    positions = {name: ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=mass)[0] for i, (name, mass) in enumerate(masses.items())}
-    paths = {name: ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=2.0)[0] for i, (name, _) in enumerate(masses.items())}
+    position_points = {name: ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=mass)[0] for i, (name, mass) in enumerate(masses.items())}
+    path_lines = {name: ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=2.0)[0] for i, (name, _) in enumerate(masses.items())}
     if rmm:
         # Track positions and paths for the objects and angular momentum markers
-        xpositions = {name: ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(masses.items())}
-        xpaths = {name: ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(masses.items())}
-        ypositions = {name: ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(masses.items())}
-        ypaths = {name: ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(masses.items())}
+        xrotational_points = {name: ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(masses.items())}
+        xrotationalpath_lines = {name: ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(masses.items())}
+        yrotational_points = {name: ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(masses.items())}
+        yrotationalpath_lines = {name: ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(masses.items())}
 
-        internal_rmms = {name: gx.plot(0, 0, alpha=0.75, linewidth=2.0, linestyle=':', color=colors[i])[0] for i, (name, _) in enumerate(masses.items())}
-        external_rmms = {name: gx.plot(0, 0, alpha=0.75, linewidth=2.0, linestyle='--', color=colors[i])[0] for i, (name, _) in enumerate(masses.items())}
-        rmms = {name: gx.plot(0, 0, alpha=0.5, linewidth=2.0, color=colors[i])[0] for i, (name, _) in enumerate(masses.items())}
+        internal_rmm_lines = {name: gx.plot(0, 0, alpha=0.75, linewidth=2.0, linestyle=':', color=colors[i])[0] for i, (name, _) in enumerate(masses.items())}
+        external_rmm_lines = {name: gx.plot(0, 0, alpha=0.75, linewidth=2.0, linestyle='--', color=colors[i])[0] for i, (name, _) in enumerate(masses.items())}
+        rmm_lines = {name: gx.plot(0, 0, alpha=0.5, linewidth=2.0, color=colors[i])[0] for i, (name, _) in enumerate(masses.items())}
 
     point_line = ax.plot(point[0]*1000, point[1]*1000, linestyle='', marker='x', alpha=0.6, color='black', markersize=3.0, label='Fixed point')[0]
 
@@ -131,51 +131,77 @@ def generate_animation(filepath, speed=1.0, traceback_time=1.0, start=0.0, end=1
         rmm_min = np.min([rmm_min, *internal_rmm[name], *external_rmm[name], *(internal_rmm[name] + external_rmm[name]), *(total_angularmomentum + total_external_angularmomentum)])
         rmm_max = np.max([rmm_max, *internal_rmm[name], *external_rmm[name], *(internal_rmm[name] + external_rmm[name]), *(total_angularmomentum + total_external_angularmomentum)])
         
+    def graph_overview_rmm(step, traceback):
+        draw_pile = []
+        for name, _ in masses.items():
+            # Angular tracks
+            cm = markers_dict[f"{name}cm"].T
+            rotx = markers_dict[f"{name[0]}x"].T
+            roty = markers_dict[f"{name[0]}y"].T
+            xrotational_points[name].set_data([rotx[0][step]], [rotx[1][step]])
+            yrotational_points[name].set_data([roty[0][step]], [roty[1][step]])
+            # Trace the angular tracks relative to the objects position
+            # Subtract the objects path from the angular track and add objects current position
+            xrotationalpath_lines[name].set_data(cm[0][step] + np.array(rotx[0][traceback:step]) - np.array(cm[0][traceback:step]), \
+                                  cm[1][step] + np.array(rotx[1][traceback:step]) - np.array(cm[1][traceback:step]))  
+            yrotationalpath_lines[name].set_data(cm[0][step] + np.array(roty[0][traceback:step]) - np.array(cm[0][traceback:step]), \
+                                  cm[1][step] + np.array(roty[1][traceback:step]) - np.array(cm[1][traceback:step])) 
+
+            draw_pile.extend([xrotational_points[name], yrotational_points[name], xrotationalpath_lines[name], yrotationalpath_lines[name]])
+        return *draw_pile,
+
+    def graph_overview(step, traceback):
+        draw_pile = []
+        for name, _ in masses.items():
+            cm = markers_dict[f"{name}cm"].T
+            position_points[name].set_data([cm[0][step]], [cm[1][step]])
+            path_lines[name].set_data([cm[0][traceback:step]], [cm[1][traceback:step]])  # Path is traced
+            draw_pile.append(position_points[name])
+        if rmm:
+            draw_pile.extend(graph_overview_rmm(step, traceback))
+        return *draw_pile,
+    
+    def graph_plot_rmm(start_step, current_step):
+        begin, stop = start_step//sample_stepsize, current_step//sample_stepsize
+        draw_pile = []
+        for name, _ in masses.items():
+            internal_rmm_lines[name].set_data(ts0[begin:stop], internal_rmm[name][begin:stop])
+            external_rmm_lines[name].set_data(ts0[begin:stop], external_rmm[name][begin:stop])
+            rmm_lines[name].set_data(ts0[begin:stop], internal_rmm[name][begin:stop] + external_rmm[name][begin:stop])
+            draw_pile.extend([internal_rmm_lines[name], external_rmm_lines[name], rmm_lines[name]])
+        total_rmm.set_data(ts0[begin:stop], total_angularmomentum[begin:stop] + total_external_angularmomentum[begin:stop])
+        draw_pile.append(total_rmm)
+        return *draw_pile,
+
+    def graph_plot(start_step, current_step):
+        draw_pile = [] 
+        if rmm:
+            draw_pile.extend(graph_plot_rmm(start_step, current_step))
+        return *draw_pile,
+
+
+
+    def graph_animation(start_step, current_step, traceback):
+        return *graph_overview(current_step, traceback), *graph_plot(start_step, current_step)
+            
 
     # Go through each frame
     def update_frame(num): 
-        step = int(stepsize*num + frame_count*start) # Current step, offseted from start
-        traceback = max(step-traceback_step, 0) # 'End' of traceback
-        title = ax.set_title(f'{filename} | {ts[step]-ts[0]:.3f} s')
+        start_step = int(frame_count*start)
+        current_step = int(stepsize*num) + start_step # Current step, offseted from start
+        traceback = max(current_step-traceback_step, 0) # 'End' of traceback
+        title = ax.set_title(f'{filename} | {ts[current_step]-ts[0]:.3f} s')
 
-        # Loop through all objects and append positions and paths to graphical line
-        for name, _ in masses.items():
-            cm = markers_dict[f"{name}cm"].T
-            positions[name].set_data([cm[0][step]], [cm[1][step]])
-            paths[name].set_data([cm[0][traceback:step]], [cm[1][traceback:step]])  # Path is traced
-            if rmm:
-                # Angular tracks
-                rotx = markers_dict[f"{name[0]}x"].T
-                roty = markers_dict[f"{name[0]}y"].T
-                xpositions[name].set_data([rotx[0][step]], [rotx[1][step]])
-                ypositions[name].set_data([roty[0][step]], [roty[1][step]])
-                # Trace the angular tracks relative to the objects position
-                # Subtract the objects path from the angular track and add objects current position
-                xpaths[name].set_data(cm[0][step] + np.array(rotx[0][traceback:step]) - np.array(cm[0][traceback:step]), \
-                                      cm[1][step] + np.array(rotx[1][traceback:step]) - np.array(cm[1][traceback:step]))  
-                ypaths[name].set_data(cm[0][step] + np.array(roty[0][traceback:step]) - np.array(cm[0][traceback:step]), \
-                                      cm[1][step] + np.array(roty[1][traceback:step]) - np.array(cm[1][traceback:step]))        
-                internal_rmms[name].set_data(ts0[int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize], \
-                                            internal_rmm[name][int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize])
-                external_rmms[name].set_data(ts0[int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize], \
-                                             external_rmm[name][int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize])
-                rmms[name].set_data(ts0[int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize], \
-                                    internal_rmm[name][int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize] \
-                                        + external_rmm[name][int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize])
+        return *graph_animation(start_step, current_step, traceback), title,
 
-        if rmm:
-            total_rmm.set_data(ts0[int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize], \
-                               total_angularmomentum[int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize] + total_external_angularmomentum[int(frame_count*start)//sample_stepsize:int(stepsize*num + frame_count*start)//sample_stepsize])
-            return *positions.values(), *xpositions.values(), *ypositions.values(), *paths.values(), *xpaths.values(), *ypaths.values(), *internal_rmms.values(), *external_rmms.values(), *rmms.values(), total_rmm, point_line, title, 
-        else:
-            return *positions.values(), *paths.values(), point_line, title
+        
 
     ax.set_aspect('equal', 'box')
     marginal = 50
     ax.set(xlim=(x_min - marginal, x_max + marginal), xlabel='X (mm)')
     ax.set(ylim=(y_min - marginal, y_max + marginal), ylabel='Y (mm)')
     gx.set(xlim=(ts0[0], ts0[-1]), xlabel='Time (s)')
-    gx.set(ylim=(rmm_min, rmm_max))
+    gx.set(ylim=(rmm_min - 0.05*(rmm_max-rmm_min), rmm_max + 0.05*(rmm_max-rmm_min)))
 
     fig.legend()
     # Generate animation with set number of frames and interval between frames (in ms)
