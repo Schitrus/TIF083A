@@ -18,18 +18,23 @@ def parse_marker_data(filepath):
     time : np.array
         Array of time values starting from zero.
     """
-    with open(filepath) as f:
+    with open(filepath, encoding='utf-8') as f:
         for _ in range(9):
             f.readline()
+        title = f.readline().strip().split('\t')[1]
         marker_names = f.readline().strip().split('\t')[1:]
+        collision = float(f.readline().strip().split('\t')[1])
         for _ in range(2):
             f.readline()
         
-        data_df = pd.read_csv(filepath, sep='\t', skiprows=12, header=None)
+        data_df = pd.read_csv(filepath, sep='\t', skiprows=15, header=None)
     
     time = data_df.iloc[:, 1].to_numpy() - data_df.iloc[0, 1] # Extract and shift time data to start from 0
     markers_dict = {}
     masses = {}
+
+    markers_dict['title'] = title
+    markers_dict['collision'] = collision
     
     for i, marker in enumerate(marker_names):
         if not marker:

@@ -7,7 +7,9 @@ ANALOG_FREQUENCY	0
 DESCRIPTION	--
 TIME_STAMP	2024-10-21, 21:15:25.973	961859.55993530
 DATA_INCLUDED	3D
+TITLE	Bevaring av storheter rörelsemängd, energi och rörelsemängdsmoment i stötar
 MARKER_NAMES	a396_1g	ax	ay	b31_6g	bx	by	c27_7g	cx	cy	d14_6g	dx	dy	e5_9g	ex	ey
+COLLISION_TIME	0
 TRAJECTORY_TYPES	Mixed	Mixed	Mixed	Measured	Measured	Measured	Mixed	Mixed	Mixed	Measured	Mixed	Measured	Measured	Measured	Measured
 Frame	Time	a396_1g X	a396_1g Y	a396_1g Z	ax X	ax Y	ax Z	ay X	ay Y	ay Z	b31_6g X	b31_6g Y	b31_6g Z	bx X	bx Y	bx Z	by X	by Y	by Z	c27_7g X	c27_7g Y	c27_7g Z	cx X	cx Y	cx Z	cy X	cy Y	cy Z	d14_6g X	d14_6g Y	d14_6g Z	dx X	dx Y	dx Z	dy X	dy Y	dy Z	e5_9g X	e5_9g Y	e5_9g Z	ex X	ex Y	ex Z	ey X	ey Y	ey Z	
 32513	65.02400	327.432	578.959	172.254	297.077	565.379	170.992	340.346	546.911	170.707	386.864	719.286	166.140	392.351	738.839	166.064	366.453	723.036	165.698	529.165	588.493	165.099	527.078	608.520	165.067	508.387	584.260	164.985	311.495	450.855	166.072	331.045	440.341	166.369	323.129	471.126	166.045	158.197	496.728	162.487	173.921	508.905	165.922	145.045	511.136	166.062

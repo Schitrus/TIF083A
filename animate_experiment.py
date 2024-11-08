@@ -57,6 +57,8 @@ class ExperimentGrapher:
         self.center_masses = {}
         self.rotational_markers = {}
         self.moment_of_inertias = {}
+        self.title_name = self.markers.get("title")
+        self.collision_time = self.markers.get('collision')
         for name, _ in self.masses.items():
             self.center_masses[name] = self.markers[f"{name}cm"].T * 0.001
             if self.experiment_type == 3:
@@ -95,7 +97,7 @@ class ExperimentGrapher:
         self.fig = plt.figure()
         self.fig.set_dpi(120)
         self.fig.set_layout_engine(layout='constrained')
-        self.fig.suptitle(f'{self.filename}', fontsize=16)
+        self.fig.suptitle(self.title_name, fontsize=16)
 
         if self.experiment_type == 1:
             self.fig.set_figheight(6)
