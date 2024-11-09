@@ -9,7 +9,7 @@ TIME_STAMP	2024-10-21, 19:54:26.470	957000.07502390
 DATA_INCLUDED	3D
 TITLE	Bevaring av rörelsemängdsmoment i inelastisk stöt 5.9g vs 22.9g
 MARKER_NAMES	h22_9g	hx	hy	v5_9g	vx	vy
-COLLISION_TIME	0
+COLLISION_TIME	0.52
 TRAJECTORY_TYPES	Mixed	Mixed	Measured	Measured	Measured	Measured
 Frame	Time	h22_9g X	h22_9g Y	h22_9g Z	hx X	hx Y	hx Z	hy X	hy Y	hy Z	v5_9g X	v5_9g Y	v5_9g Z	vx X	vx Y	vx Z	vy X	vy Y	vy Z	
 4060	8.11800	521.150	622.632	164.607	489.290	620.366	164.584	525.013	593.992	164.548	439.388	385.897	162.005	448.671	403.563	165.562	421.479	393.536	165.724

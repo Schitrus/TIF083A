@@ -9,7 +9,7 @@ TIME_STAMP	2024-10-21, 18:19:44.834	951318.46868910
 DATA_INCLUDED	3D
 TITLE	Bevaring av energi i elastisk stöt 27.7g vs (fjäderpuck) 31.6g
 MARKER_NAMES	v27_7g	vx	vy	h31_6g	hx	hy
-COLLISION_TIME	0
+COLLISION_TIME	0.75
 TRAJECTORY_TYPES	Measured	Measured	Measured	Measured	Mixed	Measured
 Frame	Time	v27_7g X	v27_7g Y	v27_7g Z	vx X	vx Y	vx Z	vy X	vy Y	vy Z	h31_6g X	h31_6g Y	h31_6g Z	hx X	hx Y	hx Z	hy X	hy Y	hy Z	
 4562	9.12200	541.567	291.136	164.342	536.047	310.597	164.422	521.920	283.370	164.704	333.651	648.931	165.951	318.843	663.358	166.274	320.345	633.232	166.139

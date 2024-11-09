@@ -9,7 +9,7 @@ TIME_STAMP	2024-10-21, 20:18:07.737	958421.33704540
 DATA_INCLUDED	3D
 TITLE	Bevaring av rörelsemängdsmoment i plastisk stöt 28.3g vs 28.3g #1
 MARKER_NAMES	h28_3g	hx	hy	v28_3g	vx	vy
-COLLISION_TIME	0
+COLLISION_TIME	0.56
 TRAJECTORY_TYPES	Measured	Measured	Measured	Mixed	Measured	Measured
 Frame	Time	h28_3g X	h28_3g Y	h28_3g Z	hx X	hx Y	hx Z	hy X	hy Y	hy Z	v28_3g X	v28_3g Y	v28_3g Z	vx X	vx Y	vx Z	vy X	vy Y	vy Z	
 7185	14.36800	528.683	579.969	165.652	514.605	567.349	165.908	542.555	565.452	166.059	510.342	323.671	165.017	530.254	324.344	164.857	509.589	342.555	165.478
