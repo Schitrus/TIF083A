@@ -5,6 +5,12 @@ import numpy as np
 
 from parse_script import parse_marker_data
 
+#Locale settings
+import locale
+# Set to German locale to get comma decimal separater
+locale.setlocale(locale.LC_NUMERIC, "sv_SE")
+plt.rcParams['axes.formatter.use_locale'] = True
+
 # Precalculated moment of inertias
 moment_of_inertia = {"5.9": 3.084225e-6, "14.6": 4.5625e-6, "27.7": 8.65625e-6, "31.6": 0.00001315025, "34.0": 6.8e-6, \
                      "34.3": 6.83e-6, "22.9": 0.0000152542625, "82.2": 0.000038233275, "82.4": 0.0000383263, \
@@ -102,7 +108,7 @@ class ExperimentGrapher:
         self.fig = plt.figure()
         self.fig.set_dpi(120)
         self.fig.set_layout_engine(layout='constrained')
-        self.fig.suptitle(self.title_name, fontsize=16)
+        self.fig.suptitle(self.title_name.replace('.', ','), fontsize=16)
 
         if self.experiment_type == 1:
             self.fig.set_figheight(6)
@@ -117,14 +123,14 @@ class ExperimentGrapher:
             self.rm_ax.grid(True, axis='y', linestyle='-.', color='grey')
             self.rm_ax.grid(True, axis='x', linestyle=':', color='darkgrey')
             self.rm_ax.set_xlabel('Tid (s)')
-            self.rm_ax.set_ylabel('Rörelsemängd (kgm/s)')
+            self.rm_ax.set_ylabel('Rörelsemängd (gm/s)')
             self.rm_ax.set_title(f'Rörelsemängd före och efter stöt')
 
             self.energy_ax = self.fig.add_subplot(gridspec[1,1])
             self.energy_ax.grid(True, axis='y', linestyle='-.', color='grey')
             self.energy_ax.grid(True, axis='x', linestyle=':', color='darkgrey')
             self.energy_ax.set_xlabel('Tid (s)')
-            self.energy_ax.set_ylabel('Energi (J)')
+            self.energy_ax.set_ylabel('Energi (mJ)')
             self.energy_ax.set_title(f'Kinetisk energi före och efter stöt')
         elif self.experiment_type == 2:
             self.fig.set_figheight(8)
@@ -139,7 +145,7 @@ class ExperimentGrapher:
             self.rm_ax.grid(True, axis='y', linestyle='-.', color='grey')
             self.rm_ax.grid(True, axis='x', linestyle=':', color='darkgrey')
             self.rm_ax.set_xlabel('Tid (s)')
-            self.rm_ax.set_ylabel('Rörelsemängd (kgm/s)')
+            self.rm_ax.set_ylabel('Rörelsemängd (gm/s)')
             self.rm_ax.set_title(f'Rörelsemängd före och efter stöt')
         elif self.experiment_type == 3:
             self.fig.set_figheight(9)
@@ -154,21 +160,21 @@ class ExperimentGrapher:
             self.energy_ax.grid(True, axis='y', linestyle='-.', color='grey')
             self.energy_ax.grid(True, axis='x', linestyle=':', color='darkgrey')
             self.energy_ax.set_xlabel('Tid (s)')
-            self.energy_ax.set_ylabel('Energi (J)')
+            self.energy_ax.set_ylabel('Energi (mJ)')
             self.energy_ax.set_title(f'Kinetisk energi före och efter stöt')
 
             self.rm_ax = self.fig.add_subplot(gridspec[1,0])
             self.rm_ax.grid(True, axis='y', linestyle='-.', color='grey')
             self.rm_ax.grid(True, axis='x', linestyle=':', color='darkgrey')
             self.rm_ax.set_xlabel('Tid (s)')
-            self.rm_ax.set_ylabel('Rörelsemängd (kgm/s)')
+            self.rm_ax.set_ylabel('Rörelsemängd (gm/s)')
             self.rm_ax.set_title(f'Rörelsemängd före och efter stöt')
 
             self.rmm_ax = self.fig.add_subplot(gridspec[1,1])
             self.rmm_ax.grid(True, axis='y', linestyle='-.', color='grey')
             self.rmm_ax.grid(True, axis='x', linestyle=':', color='darkgrey')
             self.rmm_ax.set_xlabel('Tid (s)')
-            self.rmm_ax.set_ylabel('Rörelsemängdsmoment (kgm2/s)')
+            self.rmm_ax.set_ylabel(r'Rörelsemängdsmoment (gm$^2$/s)')
             self.rmm_ax.set_title(f'Rörelsemängdsmoment före och efter stöt')
         else:
             print("ERROR: Invalid experiment type")
@@ -387,12 +393,12 @@ class ExperimentGrapher:
 
             return *self.graph_animation(start_step, current_step, traceback), 
 
-        self.overview_ax.legend(fontsize=6, loc='lower right')
-        self.rm_ax.legend(fontsize=6, loc='upper right')
+        self.overview_ax.legend(fontsize=8, loc='lower right')
+        self.rm_ax.legend(fontsize=8, loc='lower right')
         if self.experiment_type != 2:
-            self.energy_ax.legend(fontsize=6, loc='upper right')
+            self.energy_ax.legend(fontsize=8, loc='lower right')
         if self.experiment_type == 3:
-            self.rmm_ax.legend(fontsize=6, loc='upper right')
+            self.rmm_ax.legend(fontsize=8, loc='lower right')
         # Generate animation with set number of frames and interval between frames (in ms)
         self.experiment_animation = animation.FuncAnimation(self.fig, update_frame, int((end-start) * self.smoothed_frame_count/stepsize)-1, interval=1000*stepsize/actual_speed, blit=True)
 
@@ -401,44 +407,44 @@ class ExperimentGrapher:
         self.overview_ax.set_xlim(left=self.x_min - marginal, right=self.x_max + marginal)
         self.overview_ax.set_ylim(bottom=self.y_min - marginal, top=self.y_max + marginal)
         self.rm_ax.set_xlim(left=self.smooth_time_points[0], right=self.smooth_time_points[-1])
-        self.rm_ax.set_ylim(bottom=self.rm_min - 0.05*(self.rm_max-self.rm_min), top=self.rm_max + 0.05*(self.rm_max-self.rm_min))
+        self.rm_ax.set_ylim(bottom=1000*(self.rm_min - 0.05*(self.rm_max-self.rm_min)), top=1000*(self.rm_max + 0.05*(self.rm_max-self.rm_min)))
         if self.experiment_type != 2:
             self.energy_ax.set_xlim(left=self.smooth_time_points[0], right=self.smooth_time_points[-1])
-            self.energy_ax.set_ylim(bottom=self.energy_min - 0.05*(self.energy_max-self.energy_min), top=self.energy_max + 0.05*(self.energy_max-self.energy_min))
+            self.energy_ax.set_ylim(bottom=1000*(self.energy_min - 0.05*(self.energy_max-self.energy_min)), top=1000*(self.energy_max + 0.05*(self.energy_max-self.energy_min)))
         if self.experiment_type == 3:
             self.rmm_ax.set_xlim(left=self.smooth_time_points[0], right=self.smooth_time_points[-1])
-            self.rmm_ax.set_ylim(bottom=self.rmm_min - 0.05*(self.rmm_max-self.rmm_min), top=self.rmm_max + 0.05*(self.rmm_max-self.rmm_min))
+            self.rmm_ax.set_ylim(bottom=1000*(self.rmm_min - 0.05*(self.rmm_max-self.rmm_min)), top=1000*(self.rmm_max + 0.05*(self.rmm_max-self.rmm_min)))
 
-        self.position_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=f'{1000*mass:.1f}g')[0] for i, (name, mass) in enumerate(self.masses.items())}
+        self.position_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=f'm = {1000*mass:.1f}g'.replace('.', ','))[0] for i, (name, mass) in enumerate(self.masses.items())}
         self.path_lines = {name: self.overview_ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=2.0)[0] for i, (name, _) in enumerate(self.masses.items())}
         
         if self.collision_time > 0:
-            self.rm_collision_line = self.rm_ax.plot(2*[self.collision_time], [self.rm_min - marginal, self.rm_max + marginal], alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
+            self.rm_collision_line = self.rm_ax.plot(2*[self.collision_time], 1000*np.array([self.rm_min - marginal, self.rm_max + marginal]), alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
         if self.experiment_type == 1:
-            self.rm_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd')[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.rm_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             self.total_rm_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängd', linewidth=3.0, color=total_color)[0]
             if self.collision_time > 0:
-                self.rm_before_point = self.rm_ax.plot(self.time_points[self.before_index], self.rm_before, alpha=1.0, linestyle='', marker='*', label=f'Före {self.rm_before:.3} kgm/s', markersize=6.0, color=before_color)[0]
-                self.rm_after_point = self.rm_ax.plot(self.time_points[self.after_index], self.rm_after, alpha=1.0, linestyle='', marker='*', label=f'Efter {self.rm_after:.3} kgm/s', markersize=6.0, color=after_color)[0]
+                self.rm_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rm_before, alpha=1.0, linestyle='', marker='*', label=f'Före: {1000*self.rm_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rm_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rm_after, alpha=1.0, linestyle='', marker='*', label=f'Efter: {1000*self.rm_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
         else:
-            self.rmx_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd x-axel')[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.rmy_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd y-axel')[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.rmx_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd x-axel'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.rmy_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd y-axel'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             self.total_rmx_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängd x-axel', linestyle=':', linewidth=3.0, color=total_color)[0]
             self.total_rmy_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängd y-axel', linestyle='--', linewidth=3.0, color=total_color)[0]
             if self.collision_time > 0:
-                self.rmx_before_point = self.rm_ax.plot(self.time_points[self.before_index], self.rmx_before, alpha=1.0, linestyle='', marker='*', label=f'Före (x-axel) {self.rmx_before:.3} kgm/s', markersize=6.0, color=before_color)[0]
-                self.rmx_after_point = self.rm_ax.plot(self.time_points[self.after_index], self.rmx_after, alpha=1.0, linestyle='', marker='*', label=f'Efter (x-axel) {self.rmx_after:.3} kgm/s', markersize=6.0, color=after_color)[0]
-                self.rmy_before_point = self.rm_ax.plot(self.time_points[self.before_index], self.rmy_before, alpha=1.0, linestyle='', marker='*', label=f'Efter (y-axel){self.rmy_before:.3} kgm/s', markersize=6.0, color=before_color)[0]
-                self.rmy_after_point = self.rm_ax.plot(self.time_points[self.after_index], self.rmy_after, alpha=1.0, linestyle='', marker='*', label=f'Efter (y-axel) {self.rmy_after:.3} kgm/s', markersize=6.0, color=after_color)[0]
+                self.rmx_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rmx_before, alpha=1.0, linestyle='', marker='*', label=f'Före (x-axel): {1000*self.rmx_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rmx_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rmx_after, alpha=1.0, linestyle='', marker='*', label=f'Efter (x-axel): {1000*self.rmx_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
+                self.rmy_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rmy_before, alpha=1.0, linestyle='', marker='*', label=f'Efter (y-axel): {1000*self.rmy_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rmy_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rmy_after, alpha=1.0, linestyle='', marker='*', label=f'Efter (y-axel): {1000*self.rmy_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
 
         if self.experiment_type != 2:
             if self.collision_time > 0:
-                self.energy_collision_line = self.energy_ax.plot(2*[self.collision_time], [self.energy_min - marginal, self.energy_max + marginal], alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
-            self.energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=f'{1000*mass:.1f}g - total energi')[0] for i, (name, mass) in enumerate(self.masses.items())}
+                self.energy_collision_line = self.energy_ax.plot(2*[self.collision_time], 1000*np.array([self.energy_min - marginal, self.energy_max + marginal]), alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
+            self.energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=f'{1000*mass:.1f}g - total energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             self.total_energy_line = self.energy_ax.plot(0, 0, alpha=0.75, label=f'Total rörelseenergi', linewidth=3.0, color=total_color)[0]
             if self.collision_time > 0:
-                self.energy_before_point = self.energy_ax.plot(self.time_points[self.before_index], self.energy_before, alpha=1.0, linestyle='', marker='*', label=f'Före {self.energy_before:.3} J', markersize=6.0, color=before_color)[0]
-                self.energy_after_point = self.energy_ax.plot(self.time_points[self.after_index], self.energy_after, alpha=1.0, linestyle='', marker='*', label=f'Efter {self.energy_after:.3} J', markersize=6.0, color=after_color)[0]
+                self.energy_before_point = self.energy_ax.plot(self.time_points[self.before_index], 1000*self.energy_before, alpha=1.0, linestyle='', marker='*', label=f'Före: {1000*self.energy_before:.3} mJ'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.energy_after_point = self.energy_ax.plot(self.time_points[self.after_index], 1000*self.energy_after, alpha=1.0, linestyle='', marker='*', label=f'Efter: {1000*self.energy_after:.3} mJ'.replace('.',','), markersize=8.0, color=after_color)[0]
         if self.experiment_type == 3:
             # Track positions and paths for the objects and angular momentum markers
             self.xrotational_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(self.masses.items())}
@@ -446,21 +452,21 @@ class ExperimentGrapher:
             self.yrotational_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(self.masses.items())}
             self.yrotationalpath_lines = {name: self.overview_ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(self.masses.items())}
 
-            self.internal_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - inre energi')[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.external_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - yttre energi')[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.internal_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - inre energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.external_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - yttre energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             self.point_line = self.overview_ax.plot(self.reference_point[0], self.reference_point[1], linestyle='', marker='x', alpha=0.6, color='black', markersize=4.0, label='Referenspunkt')[0]
             
             if self.collision_time > 0:
-                self.rmm_collision_line = self.rmm_ax.plot(2*[self.collision_time], [self.rmm_min - marginal, self.rmm_max + marginal], alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
+                self.rmm_collision_line = self.rmm_ax.plot(2*[self.collision_time], 1000*np.array([self.rmm_min - marginal, self.rmm_max + marginal]), alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
 
-            self.internal_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - intre RMM')[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.external_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - yttre RMM')[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.internal_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - inre RMM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.external_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - yttre RMM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             self.rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.75, linewidth=2.0, color=colors[i])[0] for i, (name, _) in enumerate(self.masses.items())}
             self.total_rmm_line = self.rmm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängdsmoment', linewidth=3.0, color=total_color)[0]
 
             if self.collision_time > 0:
-                self.rmm_before_point = self.rmm_ax.plot(self.time_points[self.before_index], self.rmm_before, alpha=1.0, linestyle='', marker='*', label=f'Före {self.rmm_before:.3} kgm2/s', markersize=6.0, color=before_color)[0]
-                self.rmm_after_point = self.rmm_ax.plot(self.time_points[self.after_index], self.rmm_after, alpha=1.0, linestyle='', marker='*', label=f'Efter {self.rmm_after:.3} kgm2/s', markersize=6.0, color=after_color)[0]
+                self.rmm_before_point = self.rmm_ax.plot(self.time_points[self.before_index], 1000*self.rmm_before, alpha=1.0, linestyle='', marker='*', label=fr'Före: {1000*self.rmm_before:.3} gm$^2$/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rmm_after_point = self.rmm_ax.plot(self.time_points[self.after_index], 1000*self.rmm_after, alpha=1.0, linestyle='', marker='*', label=fr'Efter: {1000*self.rmm_after:.3} gm$^2$/s'.replace('.',','), markersize=8.0, color=after_color)[0]
 
     def graph_overview_rotation(self, step, traceback):
         draw_pile = []
@@ -495,11 +501,11 @@ class ExperimentGrapher:
     def graph_plot_rmm(self, begin, stop):
         draw_pile = []
         for name, _ in self.masses.items():
-            self.internal_rmm_lines[name].set_data(self.smooth_time_points[begin:stop], self.internal_rmms[name][begin:stop])
-            self.external_rmm_lines[name].set_data(self.smooth_time_points[begin:stop], self.external_rmms[name][begin:stop])
-            self.rmm_lines[name].set_data(self.smooth_time_points[begin:stop], self.rmms[name][begin:stop])
+            self.internal_rmm_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.internal_rmms[name][begin:stop])
+            self.external_rmm_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.external_rmms[name][begin:stop])
+            self.rmm_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.rmms[name][begin:stop])
             draw_pile.extend([self.internal_rmm_lines[name], self.external_rmm_lines[name], self.rmm_lines[name]])
-        self.total_rmm_line.set_data(self.smooth_time_points[begin:stop], self.total_rmm[begin:stop])
+        self.total_rmm_line.set_data(self.smooth_time_points[begin:stop], 1000*self.total_rmm[begin:stop])
         if self.collision_time > 0:
             if self.smooth_time_points[stop] >= self.smooth_time_points[self.before_index]:
                 self.rmm_before_point.set_alpha(1.0)
@@ -520,15 +526,15 @@ class ExperimentGrapher:
         draw_pile = []
         for name, _ in self.masses.items():
             if self.experiment_type == 1:
-                self.rm_lines[name].set_data(self.smooth_time_points[begin:stop], self.rms[name][begin:stop])
+                self.rm_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.rms[name][begin:stop])
                 draw_pile.append(self.rm_lines[name])
             else:
-                self.rmx_lines[name].set_data(self.smooth_time_points[begin:stop], self.rmxs[name][begin:stop])
-                self.rmy_lines[name].set_data(self.smooth_time_points[begin:stop], self.rmys[name][begin:stop])
+                self.rmx_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.rmxs[name][begin:stop])
+                self.rmy_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.rmys[name][begin:stop])
                 draw_pile.extend([self.rmx_lines[name], self.rmy_lines[name]])
 
         if self.experiment_type == 1:
-            self.total_rm_line.set_data(self.smooth_time_points[begin:stop], self.total_rm[begin:stop])
+            self.total_rm_line.set_data(self.smooth_time_points[begin:stop], 1000*self.total_rm[begin:stop])
             draw_pile.append(self.total_rm_line)
             if self.collision_time > 0:
                 if self.smooth_time_points[stop] >= self.smooth_time_points[self.before_index]:
@@ -544,8 +550,8 @@ class ExperimentGrapher:
                     self.rm_after_point.set_alpha(0.0)
                     draw_pile.append(self.rm_after_point)
         else:
-            self.total_rmx_line.set_data(self.smooth_time_points[begin:stop], self.total_rmx[begin:stop])
-            self.total_rmy_line.set_data(self.smooth_time_points[begin:stop], self.total_rmy[begin:stop])
+            self.total_rmx_line.set_data(self.smooth_time_points[begin:stop], 1000*self.total_rmx[begin:stop])
+            self.total_rmy_line.set_data(self.smooth_time_points[begin:stop], 1000*self.total_rmy[begin:stop])
             draw_pile.extend([self.total_rmx_line, self.total_rmy_line])
             if self.collision_time > 0:
                 if self.smooth_time_points[stop] >= self.smooth_time_points[self.before_index]:
@@ -571,12 +577,12 @@ class ExperimentGrapher:
         draw_pile = []
         for name, _ in self.masses.items():
             if self.experiment_type == 3:
-                self.internal_energy_lines[name].set_data(self.smooth_time_points[begin:stop], self.internal_energies[name][begin:stop])
-                self.external_energy_lines[name].set_data(self.smooth_time_points[begin:stop], self.external_energies[name][begin:stop])
+                self.internal_energy_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.internal_energies[name][begin:stop])
+                self.external_energy_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.external_energies[name][begin:stop])
                 draw_pile.extend([self.internal_energy_lines[name], self.external_energy_lines[name]])
-            self.energy_lines[name].set_data(self.smooth_time_points[begin:stop], self.energies[name][begin:stop])
+            self.energy_lines[name].set_data(self.smooth_time_points[begin:stop], 1000*self.energies[name][begin:stop])
             draw_pile.append(self.energy_lines[name])
-        self.total_energy_line.set_data(self.smooth_time_points[begin:stop], self.total_energy[begin:stop])
+        self.total_energy_line.set_data(self.smooth_time_points[begin:stop], 1000*self.total_energy[begin:stop])
         if self.collision_time > 0:
             if self.smooth_time_points[stop] >= self.smooth_time_points[self.before_index]:
                 self.energy_before_point.set_alpha(1.0)
@@ -603,7 +609,7 @@ class ExperimentGrapher:
         return *draw_pile,
 
     def graph_animation(self, start_step, current_step, traceback):
-        self.overview_title.set_text(f'Översikt i xy-planet | {self.time_points[current_step]-self.time_points[0]:.3f} s')
+        self.overview_title.set_text(f'Översikt i xy-planet | {self.time_points[current_step]-self.time_points[0]:.3f} s'.replace('.', ','))
         return *self.graph_overview(current_step, traceback), *self.graph_plot(start_step, current_step), self.overview_title,
 
     def save_animation(self, output):
