@@ -7,7 +7,7 @@ ANALOG_FREQUENCY	0
 DESCRIPTION	--
 TIME_STAMP	2024-10-21, 20:37:15.940	959569.53551280
 DATA_INCLUDED	3D
-TITLE	Bevaring av rörelsemängdsmoment i plastisk stöt 43.5g vs 43.3g #2
+TITLE	Bevaring av rörelsemängdsmoment i plastisk stöt 43.5 g vs 43.3 g #2
 MARKER_NAMES	h43_3g	hx	hy	v43_5g	vx	vy
 COLLISION_TIME	0.49
 TRAJECTORY_TYPES	Mixed	Measured	Measured	Measured	Mixed	Measured

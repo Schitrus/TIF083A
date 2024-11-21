@@ -415,58 +415,61 @@ class ExperimentGrapher:
             self.rmm_ax.set_xlim(left=self.smooth_time_points[0], right=self.smooth_time_points[-1])
             self.rmm_ax.set_ylim(bottom=1000*(self.rmm_min - 0.05*(self.rmm_max-self.rmm_min)), top=1000*(self.rmm_max + 0.05*(self.rmm_max-self.rmm_min)))
 
-        self.position_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=f'm = {1000*mass:.1f}g'.replace('.', ','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+        self.position_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.6, color=colors[i], markersize=6.0, label=fr'm$_{i+1}$ = {1000*mass:.1f} g'.replace('.', ','))[0] for i, (name, mass) in enumerate(self.masses.items())}
         self.path_lines = {name: self.overview_ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=2.0)[0] for i, (name, _) in enumerate(self.masses.items())}
         
-        if self.collision_time > 0:
-            self.rm_collision_line = self.rm_ax.plot(2*[self.collision_time], 1000*np.array([self.rm_min - marginal, self.rm_max + marginal]), alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
         if self.experiment_type == 1:
-            self.rm_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.total_rm_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängd', linewidth=3.0, color=total_color)[0]
+            self.total_rm_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total RM', linewidth=3.0, color=total_color)[0]
+            self.rm_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=fr'm$_{i+1}$ - RM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             if self.collision_time > 0:
-                self.rm_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rm_before, alpha=1.0, linestyle='', marker='*', label=f'Före: {1000*self.rm_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
-                self.rm_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rm_after, alpha=1.0, linestyle='', marker='*', label=f'Efter: {1000*self.rm_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
+                self.rm_collision_line = self.rm_ax.plot(2*[self.collision_time], 1000*np.array([self.rm_min - marginal, self.rm_max + marginal]), alpha=0.75, label=f'Kollisionstid', linewidth=2.0, color=collision_color)[0]
+                self.rm_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rm_before, alpha=1.0, linestyle='', marker='*', label=f'RM före: {1000*self.rm_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rm_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rm_after, alpha=1.0, linestyle='', marker='*', label=f'RM efter: {1000*self.rm_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
         else:
-            self.rmx_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd x-axel'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.rmy_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - rörelsemängd y-axel'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.total_rmx_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängd x-axel', linestyle=':', linewidth=3.0, color=total_color)[0]
-            self.total_rmy_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängd y-axel', linestyle='--', linewidth=3.0, color=total_color)[0]
+            self.total_rmx_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total RM x-axel', linestyle=':', linewidth=3.0, color=total_color)[0]
+            self.rmx_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=fr'm$_{i+1}$ - RM x-axel'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.total_rmy_line = self.rm_ax.plot(0, 0, alpha=0.75, label=f'Total RM y-axel', linestyle='--', linewidth=3.0, color=total_color)[0]
+            self.rmy_lines = {name: self.rm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=fr'm$_{i+1}$ - RM y-axel'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             if self.collision_time > 0:
-                self.rmx_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rmx_before, alpha=1.0, linestyle='', marker='*', label=f'Före (x-axel): {1000*self.rmx_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
-                self.rmx_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rmx_after, alpha=1.0, linestyle='', marker='*', label=f'Efter (x-axel): {1000*self.rmx_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
-                self.rmy_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rmy_before, alpha=1.0, linestyle='', marker='*', label=f'Efter (y-axel): {1000*self.rmy_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
-                self.rmy_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rmy_after, alpha=1.0, linestyle='', marker='*', label=f'Efter (y-axel): {1000*self.rmy_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
+                self.rm_collision_line = self.rm_ax.plot(2*[self.collision_time], 1000*np.array([self.rm_min - marginal, self.rm_max + marginal]), alpha=0.75, label=f'Kollisionstid', linewidth=2.0, color=collision_color)[0]
+                self.rmx_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rmx_before, alpha=1.0, linestyle='', marker='*', label=f'RM före (x-axel): {1000*self.rmx_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rmx_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rmx_after, alpha=1.0, linestyle='', marker='*', label=f'RM efter (x-axel): {1000*self.rmx_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
+                self.rmy_before_point = self.rm_ax.plot(self.time_points[self.before_index], 1000*self.rmy_before, alpha=1.0, linestyle='', marker='*', label=f'RM före (y-axel): {1000*self.rmy_before:.3} gm/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rmy_after_point = self.rm_ax.plot(self.time_points[self.after_index], 1000*self.rmy_after, alpha=1.0, linestyle='', marker='*', label=f'RM efter (y-axel): {1000*self.rmy_after:.3} gm/s'.replace('.',','), markersize=8.0, color=after_color)[0]
 
-        if self.experiment_type != 2:
-            if self.collision_time > 0:
-                self.energy_collision_line = self.energy_ax.plot(2*[self.collision_time], 1000*np.array([self.energy_min - marginal, self.energy_max + marginal]), alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
-            self.energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=f'{1000*mass:.1f}g - total energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+        if self.experiment_type == 1:
             self.total_energy_line = self.energy_ax.plot(0, 0, alpha=0.75, label=f'Total rörelseenergi', linewidth=3.0, color=total_color)[0]
+            self.energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=fr'm$_{i+1}$ - total energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             if self.collision_time > 0:
-                self.energy_before_point = self.energy_ax.plot(self.time_points[self.before_index], 1000*self.energy_before, alpha=1.0, linestyle='', marker='*', label=f'Före: {1000*self.energy_before:.3} mJ'.replace('.',','), markersize=8.0, color=before_color)[0]
-                self.energy_after_point = self.energy_ax.plot(self.time_points[self.after_index], 1000*self.energy_after, alpha=1.0, linestyle='', marker='*', label=f'Efter: {1000*self.energy_after:.3} mJ'.replace('.',','), markersize=8.0, color=after_color)[0]
+                self.energy_collision_line = self.energy_ax.plot(2*[self.collision_time], 1000*np.array([self.energy_min - marginal, self.energy_max + marginal]), alpha=0.75, label=f'Kollisionstid', linewidth=2.0, color=collision_color)[0]
+                self.energy_before_point = self.energy_ax.plot(self.time_points[self.before_index], 1000*self.energy_before, alpha=1.0, linestyle='', marker='*', label=f'Energi före: {1000*self.energy_before:.3} mJ'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.energy_after_point = self.energy_ax.plot(self.time_points[self.after_index], 1000*self.energy_after, alpha=1.0, linestyle='', marker='*', label=f'Energi efter: {1000*self.energy_after:.3} mJ'.replace('.',','), markersize=8.0, color=after_color)[0]
         if self.experiment_type == 3:
             # Track positions and paths for the objects and angular momentum markers
             self.xrotational_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(self.masses.items())}
             self.xrotationalpath_lines = {name: self.overview_ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(self.masses.items())}
             self.yrotational_points = {name: self.overview_ax.plot(1, 0, linestyle='', marker='o', alpha=0.5, color=colors[i], markersize=3.0)[0] for i, (name, _) in enumerate(self.masses.items())}
             self.yrotationalpath_lines = {name: self.overview_ax.plot(1, 0, linestyle='-', alpha=0.5, color=colors[i], linewidth=1.0)[0] for i, (name, _) in enumerate(self.masses.items())}
-
-            self.internal_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - inre energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.external_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - yttre energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             self.point_line = self.overview_ax.plot(self.reference_point[0], self.reference_point[1], linestyle='', marker='x', alpha=0.6, color='black', markersize=4.0, label='Referenspunkt')[0]
+
+            self.total_energy_line = self.energy_ax.plot(0, 0, alpha=0.75, label=f'Total rörelseenergi', linewidth=3.0, color=total_color)[0]
+            self.energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, color=colors[i], label=fr'm$_{i+1}$ - total energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.internal_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=fr'm$_{i+1}$ - inre energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.external_energy_lines = {name: self.energy_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=fr'm$_{i+1}$ - yttre energi'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
             
-            if self.collision_time > 0:
-                self.rmm_collision_line = self.rmm_ax.plot(2*[self.collision_time], 1000*np.array([self.rmm_min - marginal, self.rmm_max + marginal]), alpha=0.75, label=f'Kollision', linewidth=2.0, color=collision_color)[0]
-
-            self.internal_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=f'{1000*mass:.1f}g - inre RMM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
-            self.external_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=f'{1000*mass:.1f}g - yttre RMM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.total_rmm_line = self.rmm_ax.plot(0, 0, alpha=0.75, label=f'Total RMM', linewidth=3.0, color=total_color)[0]
             self.rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.75, linewidth=2.0, color=colors[i])[0] for i, (name, _) in enumerate(self.masses.items())}
-            self.total_rmm_line = self.rmm_ax.plot(0, 0, alpha=0.75, label=f'Total rörelsemängdsmoment', linewidth=3.0, color=total_color)[0]
+            self.internal_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle=':', color=colors[i], label=fr'm$_{i+1}$ - inre RMM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
+            self.external_rmm_lines = {name: self.rmm_ax.plot(0, 0, alpha=0.6, linewidth=2.0, linestyle='--', color=colors[i], label=fr'm$_{i+1}$ - yttre RMM'.replace('.',','))[0] for i, (name, mass) in enumerate(self.masses.items())}
 
             if self.collision_time > 0:
-                self.rmm_before_point = self.rmm_ax.plot(self.time_points[self.before_index], 1000*self.rmm_before, alpha=1.0, linestyle='', marker='*', label=fr'Före: {1000*self.rmm_before:.3} gm$^2$/s'.replace('.',','), markersize=8.0, color=before_color)[0]
-                self.rmm_after_point = self.rmm_ax.plot(self.time_points[self.after_index], 1000*self.rmm_after, alpha=1.0, linestyle='', marker='*', label=fr'Efter: {1000*self.rmm_after:.3} gm$^2$/s'.replace('.',','), markersize=8.0, color=after_color)[0]
+                self.energy_collision_line = self.energy_ax.plot(2*[self.collision_time], 1000*np.array([self.energy_min - marginal, self.energy_max + marginal]), alpha=0.75, label=f'Kollisionstid', linewidth=2.0, color=collision_color)[0]
+                self.energy_before_point = self.energy_ax.plot(self.time_points[self.before_index], 1000*self.energy_before, alpha=1.0, linestyle='', marker='*', label=f'Energi före: {1000*self.energy_before:.3} mJ'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.energy_after_point = self.energy_ax.plot(self.time_points[self.after_index], 1000*self.energy_after, alpha=1.0, linestyle='', marker='*', label=f'Energi efter: {1000*self.energy_after:.3} mJ'.replace('.',','), markersize=8.0, color=after_color)[0]
+                
+                self.rmm_collision_line = self.rmm_ax.plot(2*[self.collision_time], 1000*np.array([self.rmm_min - marginal, self.rmm_max + marginal]), alpha=0.75, label=f'Kollisionstid', linewidth=2.0, color=collision_color)[0]
+                self.rmm_before_point = self.rmm_ax.plot(self.time_points[self.before_index], 1000*self.rmm_before, alpha=1.0, linestyle='', marker='*', label=fr'RMM före: {1000*self.rmm_before:.3} gm$^2$/s'.replace('.',','), markersize=8.0, color=before_color)[0]
+                self.rmm_after_point = self.rmm_ax.plot(self.time_points[self.after_index], 1000*self.rmm_after, alpha=1.0, linestyle='', marker='*', label=fr'RMM efter: {1000*self.rmm_after:.3} gm$^2$/s'.replace('.',','), markersize=8.0, color=after_color)[0]
 
     def graph_overview_rotation(self, step, traceback):
         draw_pile = []

@@ -7,7 +7,7 @@ ANALOG_FREQUENCY	0
 DESCRIPTION	--
 TIME_STAMP	2024-10-18, 16:36:43.939	685938.76911570
 DATA_INCLUDED	3D
-TITLE	Bevaring av rörelsemängd i en dimension 60.9g vs 23.3g
+TITLE	Bevaring av rörelsemängd i en dimension 60.9 g vs 23.3 g
 MARKER_NAMES	v60_9g	h23_3g
 COLLISION_TIME	1.02
 TRAJECTORY_TYPES	Measured	Mixed

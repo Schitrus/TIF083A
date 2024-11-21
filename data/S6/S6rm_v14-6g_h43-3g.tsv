@@ -7,7 +7,7 @@ ANALOG_FREQUENCY	0
 DESCRIPTION	--
 TIME_STAMP	2024-10-21, 16:52:58.940	946112.61639330
 DATA_INCLUDED	3D
-TITLE	Bevaring av rörelsemängd i inelastisk stöt 14.6g vs 43.3g
+TITLE	Bevaring av rörelsemängd i inelastisk stöt 14.6 g vs 43.3 g
 MARKER_NAMES	v14_6g	h43_3g
 COLLISION_TIME	0.82
 TRAJECTORY_TYPES	Measured	Measured

@@ -7,7 +7,7 @@ ANALOG_FREQUENCY	0
 DESCRIPTION	--
 TIME_STAMP	2024-10-19, 20:50:22.348	787556.71883970
 DATA_INCLUDED	3D
-TITLE	Bevaring av energi i en dimension 23.1g vs 62.1g #2
+TITLE	Bevaring av energi i en dimension 23.1 g vs 62.1 g #2
 MARKER_NAMES	v23_1g	h62_1g
 COLLISION_TIME	1.67
 TRAJECTORY_TYPES	Mixed	Measured

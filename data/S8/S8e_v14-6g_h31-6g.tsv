@@ -7,7 +7,7 @@ ANALOG_FREQUENCY	0
 DESCRIPTION	--
 TIME_STAMP	2024-10-21, 18:16:52.217	951145.85218580
 DATA_INCLUDED	3D
-TITLE	Bevaring av energi i elastisk stöt 14.6g vs (fjäderpuck) 31.6g
+TITLE	Bevaring av energi i elastisk stöt 14.6 g vs (fjäderpuck) 31.6 g
 MARKER_NAMES	v14_6g	vx	vy	h31_6g	hx	hy
 COLLISION_TIME	0.27
 TRAJECTORY_TYPES	Measured	Measured	Measured	Measured	Measured	Measured
